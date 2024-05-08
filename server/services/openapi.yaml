@@ -1,0 +1,308 @@
+openapi: 3.0.3
+info:
+  title: Simple E-Commerce - OpenAPI 3.0
+  version: "1.0.0"
+  description: 'A demo of e-commerce project showing CRUD operation. '
+tags:
+  - name: users
+    description: Users
+  - name: products
+    description: Products
+  - name: carts
+    description: Carts
+  - name: orders
+    description: Orders
+  - name: auth
+    description: Authentication, authorization
+  - name: payments
+    description: Payments
+paths:
+  /api/auth/sign_up:
+    post:
+      summary: creating a new user
+      requestBody:
+        content:
+          application/x-wwww-form-urlencoded:
+           schema:
+            required:
+            - first_name
+            - last_name
+            - birthdate
+            - email
+            - password
+            - street_name
+            - street_number
+            - post_code
+            - city
+            - province
+            - state
+            properties:
+              first_name:
+                type: string
+              last_name:
+                type: string
+              birthdate:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+              street_name:
+                type: string
+              street_number:
+                type: string
+              post_code:
+                type: string
+              province:
+                type: string
+              state:
+                type: string
+        required: true
+      responses:
+        201:
+          description: return the new user id and cart id
+          content: {}
+      tags:
+        - auth
+  /api/auth/login:
+    post:
+      summary: login a user
+      requestBody:
+        content:
+          application/x-wwww-form-urlencoded:
+            schema:
+              required:
+              - email
+              - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: login a user and returning a cookie containing a JWT token
+          content: {}
+      tags: 
+        - auth
+  /api/auth/google:
+    get:
+      summary: redirect a user to a google OAuth
+      responses:
+        200:
+          description: after login redirect user to /api/auth/google/redirect
+      tags:
+        - auth
+  /api/auth/google/redirect:
+    get: 
+      summary: redirect path for google OAuth
+      responses:
+        200:
+          description: return JWT cookie
+      tags:
+        - auth
+  /api/products:
+    get:
+      summary: return all products
+      responses:
+        200:
+          description: an array of all products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+      tags:
+        - products
+  /api/products/{id}:
+    get:
+      summary: return one product
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: one object product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+      tags:
+        - products
+  /api/users/self:
+    get:
+      summary: return login user information
+      responses:
+        200:
+          description: ok
+          content: {}
+      tags:
+        - users
+    put:
+      description: update login user information
+      requestBody:
+        content:
+          application/x-wwww-form-urlencoded:
+            schema:
+              required:
+              - first_name
+              - last_name
+              - birthdate
+              - email
+              - password
+              - street_name
+              - street_number
+              - post_code
+              - city
+              - province
+              - state
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                birthdate:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                street_name:
+                  type: string
+                street_number:
+                  type: string
+                post_code:
+                  type: string
+                province:
+                  type: string
+                state:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: updated successfully
+          content: {}
+      tags:
+        - users
+  /api/carts/self:
+    post:
+      summary: return all products in cart
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+              - cart
+              properties:
+                cart:
+                  type: object
+        required: true
+      responses:
+        200:
+          description: return updated cart
+          content: {}
+      tags:
+        - carts
+  /api/carts/self/product={id}/quantity={quantity}:
+    put:
+      description: change the quantity of a product in the login user's cart
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: quantity
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: ok
+          content: {}
+      tags:
+        - carts
+    post:
+      description: add a new product with a certain quantity in login user's cart
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: quantity
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        201:
+          description: created
+          content: {}
+      tags:
+        - carts
+  /api/carts/self/product={id}:
+    delete:
+      description: delete a product in the cart
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: ok
+          content: {}
+      tags:
+        - carts
+  /api/carts/self/checkout:
+    post:
+      description: place an order and move products from the cart to the order
+      responses:
+        200:
+          description: return an object with the order_id
+          content: {}
+      tags:
+        - carts
+  /api/orders/self:
+    get:
+      description: return all orders by a login customer
+      responses:
+        200:
+          description: ok
+          content: {}
+      tags:
+        - orders
+  /api/payment/create-payment-intent:
+    post:
+      description: use stripe to create payment intent. Return a client secret to be used by stripe in the front-end
+      responses: 
+        200:
+          description: ok
+      tags:
+        - payments
+        
+components:
+  schemas:
+    product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name: 
+          type: string
+        price:
+          type: number
+        qunatity:
+          type: integer
+        description:
+          type: string
+        category: 
+          type: string
+        image_url:
+          type: string
