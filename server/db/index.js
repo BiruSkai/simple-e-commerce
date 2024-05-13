@@ -1,7 +1,7 @@
 const {fetchUserByEmailDb, createUserDb} = require("./users_db");
 
 
-module.exports {
+module.exports = {
         fetchUserByEmailDb,
         createUserDb
 }

@@ -1,6 +1,6 @@
 const {usersService, authService} = require("../services");
-const {fetchUserByEmail, createUser} = require("userService");
-const {getHashedPass} = require("authService");
+const {fetchUserByEmail, createUser} = usersService;
+const {getHashedPass} = authService;
 
 
 const signupUser = async (req, res, next) => {
@@ -17,10 +17,14 @@ const signupUser = async (req, res, next) => {
                 first_name, last_name, birthdate,
                 street_name, street_number,
                 city, post_code,
-                province, state
+                province, state,
+                user_role: "customer"
         };
 
         const newUser = await createUser(userdata);
+        res.status(201).send({
+                user_id: newUser.id,
+        })
 }
 
 

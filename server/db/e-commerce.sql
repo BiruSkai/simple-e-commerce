@@ -6,7 +6,8 @@ create table userdata(
   email varchar,
   password varchar,
   created_on timestamp default now(),
-  updated_on date
+  updated_on date,
+  user_role varchar
 );
 
 create table address (
