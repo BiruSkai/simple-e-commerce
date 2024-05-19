@@ -5,6 +5,7 @@ const morgan = require("morgan")
 const cors = require("cors")
 const passport = require("passport")
 const config = require("./config")
+const PORT = config.port
 const routes = require("./routes")
 const app = express()
 app.use(cookieParser())
@@ -25,8 +26,8 @@ app.use((error, req, res, next) => {
                 }
         })
 })
-   
 
-app.listen(config.port, () => {
-        console.log(`Server is listening to port: ${config.port}.`)
+
+app.listen(PORT, () => {
+        console.log(`Server is listening to port: ${PORT}.`)
 })

@@ -6,6 +6,7 @@ const fetchUserByEmail = async (email) => {
 };
 
 const createUser = async (userdata) => {
+        console.log("createUser: ", userdata)
         return await createUserDb(userdata)
 };
 
