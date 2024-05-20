@@ -4,7 +4,7 @@ const {getHashedPass} = authService;
 
 
 const signupUser = async (req, res, next) => {
-        const {email, password, first_name, last_name, birthdate} = req.body;
+        const {email, password, first_name, last_name, birthdate, street, street_number, post_code, city, province, state} = req.body;
 
         const userDb = await fetchUserByEmail(email);
         if (userDb) {
@@ -17,12 +17,19 @@ const signupUser = async (req, res, next) => {
                         first_name, 
                         last_name, 
                         birthdate,
-                        user_role: "customer"
+                        user_role: "customer",
+                        street,
+                        street_number,
+                        post_code,
+                        city,
+                        province,
+                        state
                 };
 
                 const newUser = await createUser(userdata);
-                res.status(201).send({
-                        user_id: newUser.id,
+                res.send({
+                        error: newUser.error,
+                        user_id: newUser.data,
                 })
         }
 }
