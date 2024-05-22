@@ -14,7 +14,19 @@ const validateSignUp = [
         (req, res, next) => {
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                       return res.status(422).json({errors: errors.array()})
+                       return res.statusCode(422).json({errors: errors.array()})
+                }
+                else next();
+        }
+]
+
+const validateLoginUser = [
+        check("email").not().isEmpty().isLength({max:30}),
+        check("password").not().isEmpty().isLength({min:6, max:20}),
+        (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                        return res.statusCode(422).send({errors:errors.array()})
                 }
                 else next();
         }
@@ -22,5 +34,5 @@ const validateSignUp = [
 
 
 module.exports = {
-        validateSignUp
+        validateSignUp, validateLoginUser
 }
