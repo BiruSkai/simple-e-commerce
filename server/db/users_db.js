@@ -1,11 +1,13 @@
 const {pool} = require("../config");
 
 const fetchUserByEmailDb = async (email) => {
-        // const res = await pool.query(
-        //         `SELECT userdata.id, userdata.email, userdata.password, cart.id as cart_id, userdata.user_role
-        //         FROM userdata INNER JOIN cart ON userdata.id = cart.userdata_id WHERE email = $1`, [email]
-        // );
         const res = await pool.query(`SELECT * FROM userdata WHERE email = $1`, [email])
+        return res.rows[0];
+};
+
+const fetchUserByGoogleIdDb = async (id) => {
+        const res = await pool.query(`SELECT userdata.id, email, password, user_role, cart.id AS cart_id
+                                        INNER JOIN cart ON userdata.id = cart.id WHERE google_id = $1`, [id]);
         return res.rows[0];
 };
 
@@ -31,7 +33,17 @@ const createUserDb = async (userdata) => {
         }        
 };
 
+const addGoogleIdUserDb = async ({id, google_id}) => {
+        const formula = `UPDATE userdata SET google_id = $2 WHERE id = $1 RETURNING *`;
+        const values = [id, google_id];
+        const res = await pool.query(formula, values);
+        console.log("addGoogleIdUSerDb: ", res.rows[0])
+        return res.rows[0];
+}
+
 module.exports = {
         fetchUserByEmailDb,
+        fetchUserByGoogleIdDb,
         createUserDb,
+        addGoogleIdUserDb
 };

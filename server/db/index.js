@@ -1,7 +1,9 @@
-const {fetchUserByEmailDb, createUserDb} = require("./users_db");
+const {fetchUserByEmailDb, fetchUserByGoogleIdDb, createUserDb, addGoogleIdUserDb} = require("./users_db");
 
 
 module.exports = {
         fetchUserByEmailDb,
-        createUserDb
+        fetchUserByGoogleIdDb,
+        createUserDb, 
+        addGoogleIdUserDb
 }

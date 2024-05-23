@@ -1,11 +1,12 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const LocalStrategy = require("passport-local").Strategy;
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const {usersService} = require("./services")
-const {fetchUserByEmail} = usersService;
+const {fetchUserByEmail, fetchUserByGoogleId, addGoogleIdUser} = usersService;
 
 passport.use(
         "local",
@@ -28,6 +29,40 @@ passport.use(
                 return cb (null, user, {message: "Login successfully."})
         })
 )
+
+passport.use(
+        "google",
+        new GoogleStrategy(
+                {
+                        clientID: process.env.GOOGL_CLIENT_ID,
+                        clientSecret: process.env.GOOGL_CLIENT_SECRET,
+                        callbackURL: isProduction ? process.env.GOOGL_CALLBACK_URL : "api/auth/google/redirect"
+                },
+                async (accessToken, refreshToken, profile, cb) => {
+                        const googleUser = await fetchUserByGoogleId(profile.id); 
+                        if (googleUser) {
+                                return cb (null, googleUser, {message: "User found."})
+                        } else {
+                                const userDb = await fetchUserByEmail(profile.email[0].value)
+                                if (userDb) {
+                                        const googleUser = {
+                                                id: userDb.id,
+                                                googleId: profile.id
+                                        };
+                                        const newGoogleUser = await addGoogleIdUser(googleUser)
+                                        return cb (null, newGoogleUser, {message: "Google login added to user."})
+                                }
+                        }
+                        const user = {
+                                email: profile.email[0].value,
+                                google_id: profile.id,
+                                first_name: profile.name.first_name,
+                                last_name: profile.name.last_name
+                        }
+                        const newUser = 
+                }
+        )
+);
 
 // Check A_JWT Token
 app.use(
