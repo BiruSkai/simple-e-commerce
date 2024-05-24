@@ -5,8 +5,9 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
-const {usersService} = require("./services")
-const {fetchUserByEmail, fetchUserByGoogleId, addGoogleIdUser} = usersService;
+const {usersService, cartService} = require("./services")
+const {fetchUserByEmail, fetchUserByGoogleId, addGoogleIdUser, createUser} = usersService;
+const {createCart} = cartService; 
 
 passport.use(
         "local",
@@ -57,9 +58,13 @@ passport.use(
                                 email: profile.email[0].value,
                                 google_id: profile.id,
                                 first_name: profile.name.first_name,
-                                last_name: profile.name.last_name
+                                last_name: profile.name.last_name,
+                                user_role: "customer"
                         }
-                        const newUser = 
+                        const newUser = await createUser(user);
+                        const newCart = await createCart(newUser.id);
+                        newUser.cart_id = newCart.id; // Attach cart_id to newUser object so it can appear in JWT cookie on firt login.
+                        return cb(null, newUser, {message: "New user createad."})
                 }
         )
 );
