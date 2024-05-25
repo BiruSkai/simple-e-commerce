@@ -1,8 +1,9 @@
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const {usersService, authService} = require("../services");
+const {usersService, authService, cartService} = require("../services");
 const {fetchUserByEmail, createUser} = usersService;
 const {getHashedPass} = authService;
+const {createCart} = cartService;
 require("dotenv").config({path:"../../.env"});
 const isProduction = process.env.NODE_ENV == "production";
 
@@ -32,10 +33,13 @@ const signupUser = async (req, res, next) => {
                 };
 
                 const newUser = await createUser(userdata);
-                res.send({
+                const newCart = await createCart(newUser.id);
+                res.json({
                         error: newUser.error,
                         user_id: newUser.data,
+                        cart_id: newCart.id
                 })
+                next();
         }
 }
 
@@ -63,14 +67,37 @@ const loginUser = async (req, res, next) => {
                                                 sameSite: isProduction ? "none" : "lax"
                                         })
                                         
-                                        return res.statusCode(200).send("Login successfull."); 
+                                        return res.statusCode(200).send("Login successful."); 
                                 }       
                         )
                 } 
         )
 };
 
+const googleLogin = async (req, res, next) => {
+        const user = req.user;
+        const body = {id:user.id, cart_id:user.cart_id, email:user.email, role:user.user_role};
+        const token = jwt.sign({user:body}, process.env.JWT_KEY);
+
+        res.cookie("A_JWT", token, {
+                maxAge: 1000 * 60 * 60 * 24,
+                httpOnly: true,
+                secure: isProduction ? true : false,
+                sameSite: isProduction ? "none" : "lax"
+        })
+
+        res.statusCode(200).redirect(isProduction ?
+                process.env.GOOGL_CALLBACK_URL : "http://localhost:3000/google-login"
+        )
+}
+
+const logoutUser = async (res, next) => {
+        res.clearCookie("A_JWT")
+        res.status(200).send()
+        next()
+};
+
 
 module.exports = {
-        signupUser, loginUser
+        signupUser, loginUser, googleLogin, logoutUser
 }
