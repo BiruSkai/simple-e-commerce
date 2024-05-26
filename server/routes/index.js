@@ -1,4 +1,5 @@
 const express = require("express");
+const passport = require("passport");
 const Router = require("express-promise-router");
 const router = new Router()
 const {validateSignUp, validateLoginUser} = require("./validation");

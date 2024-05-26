@@ -64,6 +64,14 @@ paths:
           content: {}
       tags:
         - auth
+  /api/auth/logout:
+    post:
+      summary: Logs out a user
+      responses:
+       200:
+        description: Logs out user and clear the cookie
+      tags:
+        -auth
   /api/auth/login:
     post:
       summary: login a user

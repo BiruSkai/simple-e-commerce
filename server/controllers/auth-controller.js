@@ -33,7 +33,9 @@ const signupUser = async (req, res, next) => {
                 };
 
                 const newUser = await createUser(userdata);
-                const newCart = await createCart(newUser.id);
+                console.log("newuserId: ", newUser.data)// it result in the id
+                const newCart = await createCart(newUser.data);
+                
                 res.json({
                         error: newUser.error,
                         user_id: newUser.data,
@@ -93,7 +95,7 @@ const googleLogin = async (req, res, next) => {
 
 const logoutUser = async (res, next) => {
         res.clearCookie("A_JWT")
-        res.status(200).send()
+        res.statusCode(200).send()
         next()
 };
 

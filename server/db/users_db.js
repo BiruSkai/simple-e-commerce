@@ -18,13 +18,13 @@ const createUserDb = async (userdata) => {
                                         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`
         const personalData_input = [first_name, last_name, birthdate, email, hashedPass, user_role]
         const personalData_res = await pool.query(personalData_formula, personalData_input)
-        console.log("createaUser 1a: ", personalData_res)
+        // console.log("createaUser 1a: ", personalData_res)
 
         const address_formula = `INSERT INTO address (street, street_number, post_code, city, province, state, userdata_id)
                                 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`
         const address_input = [street, street_number, post_code, city, province, state, personalData_res.rows[0].id]
         const address_res = await pool.query(address_formula, address_input)
-        console.log("createaUser 1b: ", address_res)
+        // console.log("createaUser 1b: ", address_res)
 
         if (personalData_res && address_res) {
                 return {error: null, data: personalData_res.rows[0].id}

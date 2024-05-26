@@ -14,7 +14,7 @@ const validateSignUp = [
         (req, res, next) => {
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                       return res.statusCode(422).json({errors: errors.array()})
+                       return res.json({errors: errors.array()})
                 }
                 else next();
         }
