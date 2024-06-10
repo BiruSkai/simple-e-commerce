@@ -1,11 +1,15 @@
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Countries from './Countries';
-import { Typography, Container, Button } from '@mui/material';
-import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom';
+import { Typography, Container, Button, Box, TextField, Alert } from '@mui/material';
+import Countries from "./Countries";
 import Datepickers from '../subcomponents/Datepickers';
-      
+import { useRef, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { Link, useHistory } from 'react-router-dom';
+import { fetchCurrentUser, isLoggedInUpdated, selectCurrentUserStatus } from "../../features/users/usersSlice";
+import { fetchCurrentCart, selectCart, selectNeedsCheckoutRedirect, selectFetchCurrentCartStatus, needsCheckoutRedirectUpdated } from "../../features/cartSlice";
+import { fetchCustomerOrders, selectFetchCustomerOrdersStatus } from "../../features/orders/ordersSlice"
+import apiAxios from '../../config/axiosConfig';
+
 
 const Register = () => {
         const container = {
@@ -17,6 +21,80 @@ const Register = () => {
         }
 
         const { register, handleSubmit, formState, watch } = useForm();
+        const history = useHistory();
+        const dispatch = useDispatch();
+        const password = useRef({});
+        password.current = watch("password", "");
+        const [errMsg, setErrMsg] = useState("");
+        const [isLoginDone, setIsLoginDone] = useState(false);
+        const userStatus = useSelector(selectCurrentUserStatus);
+        const fetchCurrentCartStatus = useSelector(selectFetchCurrentCartStatus);
+        const fetchCustomerOrdersStatus = useSelector(selectFetchCustomerOrdersStatus);
+        const needsCheckoutRedirect = useSelector(selectNeedsCheckoutRedirect);
+        const cartContents = useSelector(selectCart);
+
+        const handleRegisterUser = async(data) => {
+                console.log("data:", data)
+                try {
+                        await apiAxios.post(
+                                "/auth/sign_up", 
+                                {
+                                        first_name: data.fname,
+                                        last_name: data.lname,
+                                        birthdate: data.birthdate,
+                                        address: data.address,
+                                        number: data.number,
+                                        postcode: data.postcode,
+                                        city: data.city,
+                                        country: data.country,
+                                        email: data.email,
+                                        password: data.password
+                                }
+                        )
+                        const loginResponse = await apiAxios.post(
+                                "auth/login",
+                                {
+                                        email: data.email,
+                                        password: data.password
+                                },
+                                {withCredentials: true}
+                        )
+                        if (loginResponse.status === 200) {
+                                setErrMsg("");
+                                dispatch(isLoggedInUpdated(true));
+                                dispatch(fetchCurrentUser());
+                                dispatch(fetchCurrentCart(cartContents));
+                                dispatch(fetchCustomerOrders());
+                                setIsLoginDone(true);
+                        }
+                } catch (err) {
+                        if (err.response) {
+                                console.log(err.response.data)
+                                setErrMsg(err.response.data)
+                        } else if (err.request) {
+                                console.log(err.request.data)
+                        }
+                        else {
+                                console.log("An error occured creating an account or logging")
+                        }
+                }
+        }
+
+        // When login data is fetchCustomerOrders, redirect to main site or checkout
+        useEffect(() => {
+                if (    userStatus === "succeeded" &&
+                        fetchCurrentCartStatus === "succeeded" &&
+                        fetchCustomerOrdersStatus === "succeeded" &&
+                        isLoginDone) {
+                                // Check if we need to redirect back to checkout process
+                                if (needsCheckoutRedirect) {
+                                        dispatch(needsCheckoutRedirectUpdated(false))
+                                        history.push("/checkout")
+                                } else {
+                                        history.push("/")
+                                }
+                        }
+        }, [userStatus, needsCheckoutRedirect, fetchCurrentCartStatus, fetchCustomerOrdersStatus, isLoginDone, dispatch, history]);
 
         return ( 
                 <Container sx={container}>
@@ -34,8 +112,10 @@ const Register = () => {
                                 }}
                                 noValidate
                                 autoComplete="off"
+                                onSubmit={handleSubmit(handleRegisterUser)}
                         >
                        
+                       { errMsg && <Alert severity="info">{ errMsg }</Alert> }
                         <div>
                                 <TextField
                                         required
@@ -43,7 +123,7 @@ const Register = () => {
                                         label="First Name"
                                         defaultValue=""
                                         name="fname"
-                                        ref={register({
+                                        {...register("fname",{
                                                 required:true,
                                                 maxLength:20
                                         })}
@@ -56,7 +136,7 @@ const Register = () => {
                                         label="Last Name"
                                         defaultValue=""
                                         name="lname"
-                                        ref={register({
+                                        {...register("lname", {
                                                 required:true,
                                                 maxLength:20
                                         })}
@@ -66,7 +146,7 @@ const Register = () => {
                         </div>
 
                         <Datepickers 
-                                ref={register({
+                                {...register("birthdate", {
                                         required:true
                                 })}
                         />
@@ -80,8 +160,8 @@ const Register = () => {
                                         label="Address"
                                         defaultValue=""
                                         name="address"
-                                        ref={register({
-                                                require:true,
+                                        {...register("address", {
+                                                required:true,
                                                 maxLength:20
                                         })}
                                 />
@@ -94,7 +174,7 @@ const Register = () => {
                                         label="Number"
                                         defaultValue=""
                                         name="number"
-                                        ref={register({
+                                        {...register("number", {
                                                 required:true,
                                                 maxLength:4
                                         })}
@@ -110,7 +190,7 @@ const Register = () => {
                                 label="Postcode"
                                 defaultValue=""
                                 name="postcode"
-                                ref={register({
+                                {...register("postcode", {
                                         required:true,
                                         maxLength:8
                                 })}
@@ -124,7 +204,7 @@ const Register = () => {
                                 label="City"
                                 defaultValue=""
                                 name="city"
-                                ref={register({
+                                {...register("city", {
                                         required:true,
                                         maxLength:20
                                 })}
@@ -138,7 +218,7 @@ const Register = () => {
                                 label="Province"
                                 defaultValue=""
                                 name="province"
-                                ref={register({
+                                {...register("province", {
                                         required:true,
                                         maxLength:20
                                 })}
@@ -146,7 +226,13 @@ const Register = () => {
                         {formState.errors.province?.type === "maxLength" && "Province max 20 characters."}
                         {formState.errors.province?.type === "required" && "Province is required"}
                 
-                        <Countries />
+                        <Countries 
+                                {...register("country", {
+                                        required:true
+                                })}
+                        />
+                        {formState.errors.province?.type === "required" && "Province is required"}
+
                         <TextField
                                 required
                                 id="outlined-required"
@@ -154,7 +240,7 @@ const Register = () => {
                                 type="email"
                                 defaultValue=""
                                 name="email"
-                        ref={register({
+                        {...register("email", {
                                         required:"Email is required",
                                         maxLength:30,
                                         pattern: {
@@ -174,7 +260,7 @@ const Register = () => {
                                         type="password"
                                         defaultValue=""
                                         name="password"
-                                        ref={register({
+                                        {...register("password", {
                                                 required:true,
                                                 minLength:6,
                                                 maxLength:20
@@ -185,13 +271,13 @@ const Register = () => {
                                 {formState.errors.password?.type === "required" && "Password is required"}
                         
                                 <TextField
-                                        requireda
+                                        required
                                         id="outlined-required"
                                         label="Repeat password"
                                         type="password"
                                         defaultValue=""
                                         name="repeat_password"
-                                        ref={register({
+                                        {...register("repeat_password", {
                                                 validate: value =>
                                                         value === password.current || "Password not match."
                                         })} />
@@ -203,6 +289,7 @@ const Register = () => {
                                 <Button variant="outlined">Go to Log-In page</Button>
                         </Link>
                         </Box>
+                        
                 </Container>
          );
 }
