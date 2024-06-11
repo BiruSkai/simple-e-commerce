@@ -6,8 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Link, useHistory } from 'react-router-dom';
 import { fetchCurrentUser, isLoggedInUpdated, selectCurrentUserStatus } from "../../features/users/usersSlice";
-import { fetchCurrentCart, selectCart, selectNeedsCheckoutRedirect, selectFetchCurrentCartStatus, needsCheckoutRedirectUpdated } from "../../features/cartSlice";
-import { fetchCustomerOrders, selectFetchCustomerOrdersStatus } from "../../features/orders/ordersSlice"
+// import { fetchCurrentCart, selectCart, selectNeedsCheckoutRedirect, selectFetchCurrentCartStatus, needsCheckoutRedirectUpdated } from "../../features/cartSlice";
+// import { fetchCustomerOrders, selectFetchCustomerOrdersStatus } from "../../features/orders/ordersSlice"
 import apiAxios from '../../config/axiosConfig';
 
 
@@ -28,10 +28,10 @@ const Register = () => {
         const [errMsg, setErrMsg] = useState("");
         const [isLoginDone, setIsLoginDone] = useState(false);
         const userStatus = useSelector(selectCurrentUserStatus);
-        const fetchCurrentCartStatus = useSelector(selectFetchCurrentCartStatus);
-        const fetchCustomerOrdersStatus = useSelector(selectFetchCustomerOrdersStatus);
-        const needsCheckoutRedirect = useSelector(selectNeedsCheckoutRedirect);
-        const cartContents = useSelector(selectCart);
+        // const fetchCurrentCartStatus = useSelector(selectFetchCurrentCartStatus);
+        // const fetchCustomerOrdersStatus = useSelector(selectFetchCustomerOrdersStatus);
+        // const needsCheckoutRedirect = useSelector(selectNeedsCheckoutRedirect);
+        // const cartContents = useSelector(selectCart);
 
         const handleRegisterUser = async(data) => {
                 console.log("data:", data)
@@ -63,8 +63,8 @@ const Register = () => {
                                 setErrMsg("");
                                 dispatch(isLoggedInUpdated(true));
                                 dispatch(fetchCurrentUser());
-                                dispatch(fetchCurrentCart(cartContents));
-                                dispatch(fetchCustomerOrders());
+                                // dispatch(fetchCurrentCart(cartContents));
+                                // dispatch(fetchCustomerOrders());
                                 setIsLoginDone(true);
                         }
                 } catch (err) {
@@ -81,20 +81,26 @@ const Register = () => {
         }
 
         // When login data is fetchCustomerOrders, redirect to main site or checkout
+        // useEffect(() => {
+        //         if (    userStatus === "succeeded" &&
+        //                 fetchCurrentCartStatus === "succeeded" &&
+        //                 fetchCustomerOrdersStatus === "succeeded" &&
+        //                 isLoginDone) {
+        //                         // Check if we need to redirect back to checkout process
+        //                         if (needsCheckoutRedirect) {
+        //                                 dispatch(needsCheckoutRedirectUpdated(false))
+        //                                 history.push("/checkout")
+        //                         } else {
+        //                                 history.push("/")
+        //                         }
+        //                 }
+        // }, [userStatus, needsCheckoutRedirect, fetchCurrentCartStatus, fetchCustomerOrdersStatus, isLoginDone, dispatch, history]);
+
         useEffect(() => {
-                if (    userStatus === "succeeded" &&
-                        fetchCurrentCartStatus === "succeeded" &&
-                        fetchCustomerOrdersStatus === "succeeded" &&
-                        isLoginDone) {
-                                // Check if we need to redirect back to checkout process
-                                if (needsCheckoutRedirect) {
-                                        dispatch(needsCheckoutRedirectUpdated(false))
-                                        history.push("/checkout")
-                                } else {
-                                        history.push("/")
-                                }
-                        }
-        }, [userStatus, needsCheckoutRedirect, fetchCurrentCartStatus, fetchCustomerOrdersStatus, isLoginDone, dispatch, history]);
+                if (userStatus === "succeeded") {
+                        history.push("/")
+                }
+        })
 
         return ( 
                 <Container sx={container}>

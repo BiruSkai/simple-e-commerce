@@ -14,8 +14,11 @@ router
                 scope: ["profile", "email"],
                 session: false
         }))
-        .get("/auth/google/redirect", passport.authenticate("google", {session: false}), 
-        auth.googleLogin)//Logs user in using Google Oauth and issues a JWT back in cookie
+        .get("/auth/google/redirect", passport.authenticate("google", 
+                {session: false}), auth.googleLogin)//Logs user in using Google Oauth and issues a JWT back in cookie
         .post("auth/logout", auth.logoutUser) // Deletes httpOnly cookie to logout
+
+        .get("/carts", passport.authenticate("jwt-admin", {session:false}), carts.getAllCarts) //Gets all products in all carts
+        .posts("/carts/self", passport.authenticate("jwt-customer", {session: false}), carts.syncCartSelf) //Gets products in user#s cart and syncs with logged out cart
 
 module.exports = router

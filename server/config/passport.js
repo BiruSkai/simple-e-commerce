@@ -1,7 +1,6 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const LocalStrategy = require("passport-local").Strategy;
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
