@@ -69,7 +69,80 @@ export const cartSlice = createSlice({
                 showProductAddedMsg: false
         },
         reducers: {
-                
+                cartProductsUpdated(state, action) {
+                        state.cartProducts = action.payload
+                },
+                // Used to determine if a user is logging in as part of the checkout-flow
+                needsCheckoutRedirectUpdated(state, action) {
+                        state.needsCheckoutRedirect = action.payload
+                },
+                // Used for msg showed on alert banner for adding product
+                productAddedMsgUpdated(state, action) {
+                        state.productAddedMsg = action.payload
+                },
+                showProductAddedMsgUpdated(state, action) {
+                        state.showProductAddedMsg = action.payload
+                }
+        },
+        extraReducers: {
+                // Reducers for fetching cart
+                [fetchCurrentCart.pending]: (state, action) => {
+                        state.fetchCurrentCartStatus = "loading"
+                },
+                [fetchCurrentCart.fulfilled]: (state, action) => {
+                        state.fetchCurrentCartStatus = "succeeded"
+                },
+                [fetchCurrentCart.rejected]: (state, action) => {
+                        state.fetchCurrentCartStatus = "failed"
+                },
+                // Reducer for adding product to cart
+                [addProductToCart.pending]: (state, action) => {
+                        state.addProducttoCartStatus = "loading"
+                },
+                [addProductToCart.fulfilled]: (state, action) => {
+                        state.addProducttoCartStatus = "succeeded"
+                },
+                [addProductToCart.rejected]: (state, action) => {
+                        state.addProducttoCartStatus = "failed"
+                },
+                // Reducer for removing product from cart
+                [removeProductFromCart.pending]: (state, action) => {
+                        state.removeProductFromCartStatus = "loading"
+                },
+                [removeProductFromCart.fulfilled]: (state, action) => {
+                        state.removeProductFromCartStatus = "succeeded"
+                },
+                [removeProductFromCart.rejected]: (state, action) => {
+                        state.removeProductFromCartStatus = "failed"
+                },
+                // Reducer for changing quantity of product in cart
+                [changeProductQuantity.pending]: (state, action) => {
+                        state.changeProductQuantityStatus = "loading"
+                },
+                [changeProductQuantity.fulfilled]: (state, action) => {
+                        state.changeProductQuantityStatus = "succeeded"
+                },
+                [changeProductQuantity.rejected]: (state, action) => {
+                        state.changeProductQuantityStatus = "failed"
+                },
+                [checkoutCart.pending]: (state, action) => {
+                        state.checkoutCart = "loading"
+                },
+                [checkoutCart.fulfilled]: (state, action) => {
+                        state.checkoutCart = "succeeded"
+                },
+                [checkoutCart.rejected]: (state, action) => {
+                        state.checkoutCart = "failed"
+                }
         }
-
 })
+
+export const { 
+        cartProductsUpdated, needsCheckoutRedirectUpdated, productAddedMsgUpdated, showProductAddedMsgUpdated 
+} = cartSlice.actions;
+export const selectCartProducts = state => state.cart.cartProducts;
+export const selectFetchCurrentCartStatus = state => state.cart.fetchCurrentCartStatus;
+export const selectNeedsCheckoutRedirect = state => state.cart.needsCheckoutRedirect;
+export const selectProductAddedMsg = state => state.cart.productAddedMsg;
+export const selectShowProductAddedMsg = state => state.cart.showProductAddedMsg;
+export default cartSlice.reducer;
