@@ -15,7 +15,7 @@ export const usersSlice = createSlice({
         },
         reducers: {
                isLoggedInUpdated(state, action) {
-                state.isLoggedIn = action.payload
+                        state.isLoggedIn = action.payload
                },
                 //Clear user info when logging out 
                 currentUserUpdated(state, action) {
@@ -26,18 +26,19 @@ export const usersSlice = createSlice({
                         state.currentUserStatus = action.payload
                 }
         },
-        extraReducers: {
+        extraReducers: (builder) => {
                 // Reducers for fetching user
-                [fetchCurrentUser.pending]: (state, action) => {
+                builder
+                        .addCase(fetchCurrentUser.pending, (state, action) => {
                         state.currentUserStatus = "loading"
-                },
-                [fetchCurrentUser.fulfilled]: (state, action) => {
+                })
+                        .addCase(fetchCurrentUser.fulfilled, (state, action) => {
                         state.currentUserStatus = "succeeded"
                         state.currentUser = action.payload
-                },
-                [fetchCurrentUser.rejected]: (state, action) => {
+                })
+                        .addCase(fetchCurrentUser.rejected, (state, action) => {
                         state.currentUserStatus = 'failed'
-                }
+                })
         }
 });
 
@@ -45,6 +46,7 @@ export const {  isLoggedInUpdated,
                 currentUserUpdated,
                 currentUserStatusUpdated
 } = usersSlice.actions;
+
 
 export const selectCurrentUserStatus = state => state.users.currentUserStatus;
 export const selectCurrentUser = state => state.users.currentUser;

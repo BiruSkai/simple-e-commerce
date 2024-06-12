@@ -3,7 +3,7 @@ const passport = require("passport");
 const Router = require("express-promise-router");
 const router = new Router()
 const {validateSignUp, validateLoginUser} = require("./validation");
-const { auth } = require("../controllers");
+const { auth, users } = require("../controllers");
 
 
 
@@ -18,7 +18,12 @@ router
                 {session: false}), auth.googleLogin)//Logs user in using Google Oauth and issues a JWT back in cookie
         .post("auth/logout", auth.logoutUser) // Deletes httpOnly cookie to logout
 
-        .get("/carts", passport.authenticate("jwt-admin", {session:false}), carts.getAllCarts) //Gets all products in all carts
-        .posts("/carts/self", passport.authenticate("jwt-customer", {session: false}), carts.syncCartSelf) //Gets products in user#s cart and syncs with logged out cart
+        .get("/users", passport.authenticate("jwt-admin", {session: false}), users.getAllUsers)
+        .get("/users/self", passport.authenticate("jwt-customer", {session:false}), users.getUserSelf) //Customer can access their info
+        .put("/users/self", validatePutUser, passport.authenticate("jwt-customer", {session: false}), users.putUserSelf) //Customer can edit their user info
+        .delete("/users/:id", validateDeleteUser, passport.authenticate("jwt-admin", {session: false}), users.deleteUser) //Delete user and associated cart
+
+        // .get("/carts", passport.authenticate("jwt-admin", {session:false}), carts.getAllCarts) //Gets all products in all carts
+        // .posts("/carts/self", passport.authenticate("jwt-customer", {session: false}), carts.syncCartSelf) //Gets products in user#s cart and syncs with logged out cart
 
 module.exports = router
