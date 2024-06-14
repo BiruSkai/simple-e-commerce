@@ -1,6 +1,7 @@
 const {pool} = require("../config");
 const { datetime } = require("../config/date_time");
 
+
 const fetchUserByEmailDb = async (email) => {
         const res = await pool.query(`SELECT * FROM userdata WHERE email = $1`, [email])
         return res.rows[0];
@@ -34,16 +35,16 @@ const createUserDb = async (userdata) => {
         }        
 };
 
-const modifyUserDb = async ({ email, password, street, street_number, post_code, city, province, state }) => {
+const modifyUserDb = async ({ id, email, password, street, street_number, post_code, city, province, state }) => {
         const userdata_text = `UPDATE userdata SET email=$1, password=$2, WHERE id=$3 RETURNING *`;
-        const userdata_values = [email, password];
+        const userdata_values = [email, password, id];
         const userdata_res = await pool.query(userdata_text, userdata_values);
-        console.log("userdata_res: ", userdata_res.rows[0]);
+        // console.log("userdata_res: ", userdata_res.rows[0]);
         
         const address_text = `UPDATE address SET street=$1, street_number=$2, post_code=$3, city=$4, province=$5, state=$6, updated_on=$7 WHERE userdata_id=$8 RETURNING *`;
-        const address_values = [ street, street_number, post_code, city, province, state, datetime];
+        const address_values = [ street, street_number, post_code, city, province, state, datetime, id];
         const address_res = await pool.query(address_text, address_values);
-        console.log("address_res: ", address_res.rows[0]);
+        // console.log("address_res: ", address_res.rows[0]);
 
         return {userdata_res: userdata_res.rows[0], address_res: address_res.rows[0]};
 };       

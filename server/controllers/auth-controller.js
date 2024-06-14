@@ -73,7 +73,7 @@ const loginUser = async (req, res, next) => {
                                 }       
                         )
                 } 
-        )
+        )(req, res, next)
 };
 
 const googleLogin = async (req, res, next) => {
