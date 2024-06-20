@@ -10,9 +10,11 @@ function App() {
       <div className="content">
         <Router>
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/sign_up" component={Register} />
+            <Route path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/sign_up" component={Register} />
+            <Route exact path="/google-login" component={GoogleLogin} />
+            <Route exact path="/google-login/user-register" component={GoogleUserRegister} />
           </Switch>
         </Router>
       </div>

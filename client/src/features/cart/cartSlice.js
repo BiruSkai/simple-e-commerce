@@ -140,7 +140,7 @@ export const cartSlice = createSlice({
 export const { 
         cartProductsUpdated, needsCheckoutRedirectUpdated, productAddedMsgUpdated, showProductAddedMsgUpdated 
 } = cartSlice.actions;
-export const selectCartProducts = state => state.cart.cartProducts;
+export const selectCart = state => state.cart.cartProducts;
 export const selectFetchCurrentCartStatus = state => state.cart.fetchCurrentCartStatus;
 export const selectNeedsCheckoutRedirect = state => state.cart.needsCheckoutRedirect;
 export const selectProductAddedMsg = state => state.cart.productAddedMsg;

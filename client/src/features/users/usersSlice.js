@@ -21,7 +21,7 @@ export const usersSlice = createSlice({
                 currentUserUpdated(state, action) {
                         state.currentUser = action.payload
                 },
-                // Used to reset user stateus on logout
+                // Used to reset user status on logout
                 currentUserStatusUpdated(state, action) {
                         state.currentUserStatus = action.payload
                 }

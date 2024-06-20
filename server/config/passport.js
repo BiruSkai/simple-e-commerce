@@ -4,13 +4,14 @@ const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
-const {usersService, cartService} = require("./services")
+const {usersService, cartService} = require("../services")
 const {fetchUserByEmail, fetchUserByGoogleId, addGoogleIdUser, createUser} = usersService;
 const {createCart} = cartService; 
 
 passport.use(
-        "local",
-        new LocalStrategy ({emailField:"email", passwordField:"password"}, async (email, password, cb) => {
+        "login",
+        new LocalStrategy ({emailField:"email", passwordField:"password"}, async (email=req.body.email, password=req.body.password, cb) => {
+                console.log("email: ", req.body.email)
                 const user = await fetchUserByEmail(email);
                 if (!user) {
                         return cb (null, false , {message: "Incorrect email or password."})
