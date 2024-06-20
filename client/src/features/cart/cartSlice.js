@@ -84,62 +84,64 @@ export const cartSlice = createSlice({
                         state.showProductAddedMsg = action.payload
                 }
         },
-        extraReducers: {
+        extraReducers: (builder) => {
                 // Reducers for fetching cart
-                [fetchCurrentCart.pending]: (state, action) => {
+                builder
+                        .addCase(fetchCurrentCart.pending, (state, action) => {
                         state.fetchCurrentCartStatus = "loading"
-                },
-                [fetchCurrentCart.fulfilled]: (state, action) => {
+                })
+                        .addCase(fetchCurrentCart.fulfilled, (state, action) => {
                         state.fetchCurrentCartStatus = "succeeded"
-                },
-                [fetchCurrentCart.rejected]: (state, action) => {
+                })
+                        .addCase(fetchCurrentCart.rejected, (state, action) => {
                         state.fetchCurrentCartStatus = "failed"
-                },
+                })
                 // Reducer for adding product to cart
-                [addProductToCart.pending]: (state, action) => {
-                        state.addProducttoCartStatus = "loading"
-                },
-                [addProductToCart.fulfilled]: (state, action) => {
-                        state.addProducttoCartStatus = "succeeded"
-                },
-                [addProductToCart.rejected]: (state, action) => {
-                        state.addProducttoCartStatus = "failed"
-                },
+                        .addCase(addProductToCart.pending, (state, action) => {
+                        state.addProductToCartStatus = "loading"
+                })
+                        .addCase(addProductToCart.fulfilled, (state, action) => {
+                        state.addProductToCartStatus = "succeeded"
+                })
+                        .addCase(addProductToCart.rejected, (state, action) => {
+                        state.addProductToCartStatus = "failed"
+                })
                 // Reducer for removing product from cart
-                [removeProductFromCart.pending]: (state, action) => {
+                        .addCase(removeProductFromCart.pending, (state, action) => {
                         state.removeProductFromCartStatus = "loading"
-                },
-                [removeProductFromCart.fulfilled]: (state, action) => {
+                })
+                        .addCase(removeProductFromCart.fulfilled, (state, action) => {
                         state.removeProductFromCartStatus = "succeeded"
-                },
-                [removeProductFromCart.rejected]: (state, action) => {
+                })
+                        .addCase(removeProductFromCart.rejected, (state, action) => {
                         state.removeProductFromCartStatus = "failed"
-                },
+                })
                 // Reducer for changing quantity of product in cart
-                [changeProductQuantity.pending]: (state, action) => {
+                        .addCase(changeProductQuantity.pending, (state, action) => {
                         state.changeProductQuantityStatus = "loading"
-                },
-                [changeProductQuantity.fulfilled]: (state, action) => {
+                })
+                        .addCase(changeProductQuantity.fulfilled, (state, action) => {
                         state.changeProductQuantityStatus = "succeeded"
-                },
-                [changeProductQuantity.rejected]: (state, action) => {
+                })
+                        .addCase(changeProductQuantity.rejected, (state, action) => {
                         state.changeProductQuantityStatus = "failed"
-                },
-                [checkoutCart.pending]: (state, action) => {
+                })
+                        .addCase(checkoutCart.pending, (state, action) => {
                         state.checkoutCart = "loading"
-                },
-                [checkoutCart.fulfilled]: (state, action) => {
+                })
+                        .addCase(checkoutCart.fulfilled, (state, action) => {
                         state.checkoutCart = "succeeded"
-                },
-                [checkoutCart.rejected]: (state, action) => {
+                })
+                        .addCase(checkoutCart.rejected, (state, action) => {
                         state.checkoutCart = "failed"
-                }
+                })
         }
 })
 
 export const { 
         cartProductsUpdated, needsCheckoutRedirectUpdated, productAddedMsgUpdated, showProductAddedMsgUpdated 
 } = cartSlice.actions;
+
 export const selectCart = state => state.cart.cartProducts;
 export const selectFetchCurrentCartStatus = state => state.cart.fetchCurrentCartStatus;
 export const selectNeedsCheckoutRedirect = state => state.cart.needsCheckoutRedirect;
