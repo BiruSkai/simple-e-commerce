@@ -9,6 +9,7 @@ export const fetchCustomerOrders = createAsyncThunk("orders/fetchCustomerOrders"
                 if (!orders[orderProduct.order_id]) {
                         orders[orderProduct.order_id] = {}
                 }
+                print("ordersSlice: ", orderProduct)
                 orders[orderProduct.order_id][orderProduct.product_id] = orderProduct
         })
         return orders

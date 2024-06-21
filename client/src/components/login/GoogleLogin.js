@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser, selectCurrentUserStatus } from "../../features/users/usersSlice";
-import { selectCart, selectFetchCurrentCartStatus, selectNeedsCheckoutRedirect } from "../../features/cart/cartSlice";
+import { needsCheckoutRedirectUpdated, selectCart, selectFetchCurrentCartStatus, selectNeedsCheckoutRedirect } from "../../features/cart/cartSlice";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { fetchAllProducts, selectFetchAllProductsStatus } from "../../features/products/productsSlice";
 import { fetchCustomerOrders, selectFetchCustomerOrdersStatus } from "../../features/orders/ordersSlice";
@@ -26,9 +26,40 @@ const GoogleLogin = () => {
                         dispatch(fetchAllProducts())
                 }
         }, [userStatus, dispatch, history, cartContents])
+
+        useEffect(() => {
+                if (userStatus == "failed") {
+                        setLoginMsg("An error occurred logging in using Google")
+                }
+        }, [userStatus])
+
+        // Ask for address if not in the database, otherwise redirect to main site
+        useEffect(() => {
+                if (userStatus === "succeeded" &&
+                        fetchAllProductsStatus === "succeeded" &&
+                        fetchCurrentCartStatus === "succeeded" &&
+                        fetchCustomerOrderStatus === "succeeded"
+                ) {
+                        //Set log-in status
+                        dispatch(isLoggedInUpdated(true))
+                        if (user.address) {
+                                // Check if we need to redirect back to checkout process
+                                if (needsCheckoutRedirect) {
+                                        dispatch(needsCheckoutRedirectUpdated(false))
+                                        history.push("/checkout")
+                                } else {
+                                        history.push("/google-login/user-register")
+                                }
+                        }
+                }
+        }, [userStatus, user.address, dispatch, history, needsCheckoutRedirect, fetchAllProductsStatus, fetchCurrentCartStatus, fetchCustomerOrderStatus])
         
         return ( 
-                
+                <div>
+                        <p>
+                                {loginMsg}
+                        </p>
+                </div>
          );
 }
  
