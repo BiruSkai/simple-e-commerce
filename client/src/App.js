@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 import Register from './components/login/Register';
 import Home from './components/Home';
 import Login from './components/login/Login';
+import GoogleUserRegister from './components/login/GoogleUserRegister';
+import GoogleLogin from './components/login/GoogleLogin';
 
 function App() {
   return (

@@ -3,6 +3,10 @@ const {fetchUserByEmailDb, fetchUserByGoogleIdDb, createUserDb, addGoogleIdUserD
 } = require("../db");
 
 
+const fetchAllUsers = async () => {
+        return await fetchUsersDb()
+}
+
 const fetchUserByEmail = async (email) => {
         return await fetchUserByEmailDb(email)
 };

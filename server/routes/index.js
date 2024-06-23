@@ -17,11 +17,11 @@ router
                 session: false
         }))
         .get("/auth/google/redirect", passport.authenticate("google", 
-                {session: false}), auth.googleLogin)//Logs user in using Google Oauth and issues a JWT back in cookie
+                {session: false}), auth.googleLogin) //Logs user in using Google Oauth and issues a JWT back in cookie
         
 
-        // .get("/users", passport.authenticate("jwt-admin", {session: false}), users.getAllUsers)
-        // .get("/users/self", passport.authenticate("jwt-customer", {session:false}), users.getUserSelf) //Customer can access their info
+        .get("/users", passport.authenticate("jwt-admin", {session: false}), users.getAllUsers)
+        .get("/users/self", passport.authenticate("jwt-customer", {session:false}), users.getUserSelf) //Customer can access their info
         .put("/users/self", validatePutUser, passport.authenticate("jwt-customer", {session: false}), users.putUserSelf) //Customer can edit their user info
         // .delete("/users/:id", validateDeleteUser, passport.authenticate("jwt-admin", {session: false}), users.deleteUser) //Delete user and associated cart
 

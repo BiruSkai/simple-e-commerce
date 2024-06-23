@@ -237,7 +237,7 @@ const Register = () => {
                                         required:true
                                 })}
                         />
-                        {formState.errors.province?.type === "required" && "Province is required"}
+                        {formState.errors.country?.type === "required" && "Country is required"}
 
                         <TextField
                                 required

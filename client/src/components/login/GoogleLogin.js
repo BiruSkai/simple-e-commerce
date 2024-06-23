@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentUser, selectCurrentUserStatus } from "../../features/users/usersSlice";
-import { needsCheckoutRedirectUpdated, selectCart, selectFetchCurrentCartStatus, selectNeedsCheckoutRedirect } from "../../features/cart/cartSlice";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { fetchCurrentUser, isLoggedInUpdated, selectCurrentUser, selectCurrentUserStatus } from "../../features/users/usersSlice";
+import { fetchCurrentCart, needsCheckoutRedirectUpdated, selectCart, selectFetchCurrentCartStatus, selectNeedsCheckoutRedirect } from "../../features/cart/cartSlice";
+import { useHistory } from "react-router-dom";
 import { fetchAllProducts, selectFetchAllProductsStatus } from "../../features/products/productsSlice";
 import { fetchCustomerOrders, selectFetchCustomerOrdersStatus } from "../../features/orders/ordersSlice";
+import { useEffect, useState } from "react";
 
 const GoogleLogin = () => {
         const user = useSelector(selectCurrentUser)

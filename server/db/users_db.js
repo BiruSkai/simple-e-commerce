@@ -2,6 +2,27 @@ const {pool} = require("../config");
 const { datetime } = require("../config/date_time");
 
 
+const fetchUsersDb = async () => {
+        const res = await pool.query(
+                `SELECT userdata.id, first_name, last_name, birth_date, user_role, created_on,
+                street, street_number, post_code, city, province, state, cart.id AS cart_id
+                FROM userdata INNER JOIN address ON userdata.id = address.userdata_id
+                FROM userdata INNER JOIN cart ON userdata.id = cart.user_id `
+        )
+        return res.rows[0];
+}
+
+const fetchUserByIdDb = async (id) => {
+        const res = await populate.query(
+                `SELECT userdata.id, first_name, last_name, birth_date,
+                street, street_number, post_code, city, province, state, cart.id AS cart_id
+                FROM userdata INNER JOIN address ON userdata.id = address.userdata_id
+                FROM userdata INNER JOIN cart ON userdata.id = cart.user_id 
+                WHERE userdata.id = $1`,
+                 [id])
+        return res.rows[0];
+}
+
 const fetchUserByEmailDb = async (email) => {
         const res = await pool.query(`SELECT * FROM userdata WHERE email = $1`, [email])
         return res.rows[0];
@@ -57,11 +78,22 @@ const addGoogleIdUserDb = async ({id, google_id}) => {
         return res.rows[0];
 }
 
+const removeUserDb = async (id) => {
+        try {
+                await pool.query(`DROP TABLE userdata WHERE id = $1`, [id])
+                return {message: `Id: ${id} has been deleted.`}
+        } catch (err) {
+                return err.message
+        }
+}
+
 module.exports = {
         fetchUserByEmailDb,
         fetchUserByGoogleIdDb,
         createUserDb,
         modifyUserDb,
         addGoogleIdUserDb,
-        
+        fetchUsersDb,
+        fetchUserByIdDb,
+        removeUserDb
 };
