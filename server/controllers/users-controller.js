@@ -1,5 +1,5 @@
 const { usersService } = require("../services");
-const { modifyUser } = usersService;
+const { modifyUser, fetchAllUsers, fetchUserById } = usersService;
 
 
 const putUserSelf = async (req, res, next) => {
@@ -19,7 +19,16 @@ const getAllUsers = async (req, res, next) => {
         const users = await fetchAllUsers()
 }
 
+const getUserSelf = async (req, res, next) => {
+      const id = req.user.id //Extract id from passport user object
+      const user = fetchUserById(id)
+      res.status(200).json(user)
+      next()  
+}
+
 
 module.exports = {
-        putUserSelf
+        putUserSelf,
+        getAllUsers,
+        getUserSelf
 }

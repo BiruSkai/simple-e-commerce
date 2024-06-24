@@ -7,6 +7,8 @@ const ExtractJWT = require("passport-jwt").ExtractJwt;
 const {usersService, cartService} = require("../services")
 const {fetchUserByEmail, fetchUserByGoogleId, addGoogleIdUser, createUser} = usersService;
 const {createCart} = cartService; 
+const isProduction = process.env.NODE_ENV === "production"
+
 
 passport.use(
         "login",
@@ -70,11 +72,11 @@ passport.use(
 );
 
 // Check A_JWT Token
-app.use(
+passport.use(
         "jwt-customer",
         new JWTStrategy(
                 {
-                        secretOrKey: process.env.JWT_TOKEN,
+                        secretOrKey: process.env.JWT_KEY,
                         jwtFromRequest: ExtractJWT.fromExtractors([
                                 (req) => {
                                         let token = null;
@@ -96,7 +98,7 @@ app.use(
 );
 
 // Check A_JWT cookie and if a uesr has user_role = admin
-app.use(
+passport.use(
         "jwt-admin",
         new JWTStrategy(
                 {

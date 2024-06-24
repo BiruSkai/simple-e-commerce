@@ -4,8 +4,6 @@ const Router = require("express-promise-router");
 const router = new Router()
 const {validateSignUp, validateLoginUser, validatePutUser} = require("./validation");
 const { auth, users } = require("../controllers");
-const { loginUser } = require("../controllers/auth-controller");
-
 
 
 router

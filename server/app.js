@@ -5,18 +5,20 @@ const helmet = require('helmet')
 const morgan = require("morgan")
 const cors = require("cors")
 const passport = require("passport")
+require("./config/passport")
 const config = require("./config")
-const PORT = config.port
 const routes = require("./routes")
 const app = express()
-app.use(cookieParser())
-app.use(morgan("dev"))
+
 app.use(helmet())
-app.use(cors())
-app.use(cookieParser())
+app.use(cors(origin))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(bodyParser.urlencoded({extended:true}))
+app.use(cookieParser())
+app.use(morgan("dev"))
+app.use(passport.initialize())
+
 app.use("/api", routes)
 
 app.use((error, req, res, next) => {
@@ -29,6 +31,6 @@ app.use((error, req, res, next) => {
 })
 
 
-app.listen(PORT, () => {
-        console.log(`Server is listening to port: ${PORT}.`)
+app.listen(config.port, () => {
+        console.log(`Server is listening to port: ${config.port}.`)
 })
