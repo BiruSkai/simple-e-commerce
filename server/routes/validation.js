@@ -1,5 +1,6 @@
 const {check, validationResult} = require("express-validator");
 
+
 const validateSignUp = [
         check("email").not().isEmpty().isEmail().isLength({max:30}),
         check("password").not().isEmpty().isLength({min:6, max:20}),
@@ -62,6 +63,57 @@ const validateDeleteUser = [
                 else next();
 }]
 
+const validateGetProducts = [
+        check("id").not().isEmpty().isInt()
+        , (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                        return res.json({ errors: errors.array() });
+                }
+                else next();
+}]
+
+const validatePostProduct = [
+        check("name").not().isEmpty().isLength({max:100}),
+        check("price").not().isEmpty(),
+        check("description").not().isEmpty(),
+        check("category").not().isEmpty().isLength({max:100}),
+        check("image_url").isLength({max:100}),
+        check("status").not().isEmpty().isLength({max:100}),
+        , (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty) {
+                        return res.json({ errors:errors.array() })
+                }
+                else next();
+}]
+
+const validatePutProduct = [
+        check("id").not().isEmpty().isInt(),
+        check("name").not().isEmpty().isLength({max:100}),
+        check("price").not().isEmpty(),
+        check("description").not().isEmpty(),
+        check("category").not().isEmpty().isLength({max:100}),
+        check("image_url").isLength({max:100}),
+        check("status").not().isEmpty().isLength({max:100}),
+        , (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty) {
+                        return res.json({ errors:errors.array() })
+                }
+                else next();
+}]
+
+const validateDeleteProduct = [
+        check("id").not().isEmpty().isInt()
+        , (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                        return res.json({ errors: errors.array() });
+                }
+                else next();
+}]
+
 const validateCart = [
         check("product_id").not().isEmpty().isInt(),
         check("quantity").not().isEmpty().isInt()
@@ -96,5 +148,6 @@ const validateOrder = [
 
 module.exports = {
         validateSignUp, validateLoginUser, validatePutUser, validateDeleteUser,
-        validateCart, validateDeleteCartProduct, validateOrder,
+        validateGetProducts, validatePostProduct, validatePutProduct, validateDeleteProduct,
+        validateCart, validateDeleteCartProduct, validateOrder
 }
