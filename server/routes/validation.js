@@ -52,7 +52,49 @@ const validatePutUser = [
         }
 ]
 
+const validateDeleteUser = [
+        check("id").not().isEmpty().isInt()
+        , (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                        return res.json({ errors: errors.array() });
+                }
+                else next();
+}]
+
+const validateCart = [
+        check("product_id").not().isEmpty().isInt(),
+        check("quantity").not().isEmpty().isInt()
+        , (req, res, next) => {
+                const errors = validationResult(req)
+                if (!errors.isEmpty) {
+                        return res.json({ errors: errors.array() });
+                }
+                else next();
+}]
+
+const validateDeleteCartProduct = [
+        check("product_id").not().isEmpty().isInt()
+        , (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                        return res.json({ errors: errors.array() });
+                }
+                else next();
+}]
+
+const validateOrder = [
+        check("orderId").not().isEmpty().isInt()
+        , (req, res, next) => {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                        return res.json({ errors: errors.array() })
+                }
+                else next();
+}]
+
 
 module.exports = {
-        validateSignUp, validateLoginUser, validatePutUser
+        validateSignUp, validateLoginUser, validatePutUser, validateDeleteUser,
+        validateCart, validateDeleteCartProduct, validateOrder,
 }
