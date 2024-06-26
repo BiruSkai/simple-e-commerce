@@ -37,6 +37,7 @@ create table products (
   img_url varchar,
   quantity int,
   price decimal(10,2) not null,
+  status varchar(100),
 );
 
 create table orders_products (
@@ -47,15 +48,14 @@ create table orders_products (
   primary key(order_id, product_id)
 );
 
-create table cart_product (
+create table cart_products (
   cart_id int references cart(id),
   product_id int references product(id),
   quantity int,
- 	total_cost float,
   primary key (cart_id, product_id)
 );
 
-create table cart (
+create table carts (
 	id serial primary key,
   userdata_id int references userdata(id) unique
 

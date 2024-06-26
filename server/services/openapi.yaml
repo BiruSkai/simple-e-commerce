@@ -306,11 +306,13 @@ components:
           type: string
         price:
           type: number
-        qunatity:
+        quantity:
           type: integer
         description:
           type: string
         category: 
           type: string
         image_url:
+          type: string
+        status:
           type: string
