@@ -14,7 +14,7 @@ const fetchCartsDb = async () => {
 //Fetches all products in a cart for a userId
 const fetchCartByIdDb = async (userId) => {
         const res = await pool.query(
-                `SELECT products.id, name, description, category, image_url, status, quantity FROM carts
+                `SELECT products.id, name, price, description, category, image_url, status, quantity FROM carts
                 INNER JOIN cart_products ON carts.id = cart_products.cart_id
                 INNER JOIN products ON cart_products.product_id = products.id
                 WHERE user_id = $1`, [userId]
