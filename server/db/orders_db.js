@@ -28,7 +28,7 @@ const createOrderDb = async ({user_id, status}) => {
         const text = `INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *`
         const values = [user_id, status]
         const res = await pool.query(text, values)
-        return res.rows
+        return res.rows[0].id
 };
 
 //Add one product to an order

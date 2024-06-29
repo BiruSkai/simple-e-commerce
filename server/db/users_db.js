@@ -24,7 +24,10 @@ const fetchUserByIdDb = async (id) => {
 }
 
 const fetchUserByEmailDb = async (email) => {
-        const res = await pool.query(`SELECT * FROM userdata WHERE email = $1`, [email])
+        const res = await pool.query(
+                `SELECT userdata.id, email, carts.id AS cart_id, password, user_role  FROM userdata
+                 INNER JOIN carts ON userdata.id = carts.user_id 
+                 WHERE email = $1`, [email])
         return res.rows[0];
 };
 
