@@ -37,5 +37,6 @@ const calculateOrderAmount = async (userId) => {
 
 
 module.exports = {
-        fetchOrders, fetchOrderById, fetchOrdersByUser, createOrder, createProductInOrder, calculateOrderAmount
+        fetchOrders, fetchOrderById, fetchOrdersByUser, 
+        createOrder, createProductInOrder, calculateOrderAmount
 }
