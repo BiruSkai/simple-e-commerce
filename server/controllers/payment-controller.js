@@ -2,8 +2,8 @@ const { cartsService, ordersService } = require("../sevices");
 const { fechCartsById } = cartsService;
 const { calculateOrderAmount } = ordersService;
 const stripe = require("stripe")(process.env.STRIPE_KEY);
+//Web stripe@8.137: https://www.npmjs.com/package/stripe/v/8.137.0
 
-console.log("payment.controller.js: ", stripe)
 
 const createPaymentIntent = async (req, res, next) => {
         const userId = req.user.id //Extract user id from passport user object
